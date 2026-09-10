@@ -406,7 +406,7 @@
         document.getElementById('presentCount').innerText = presentList.length;
         document.getElementById('absentCount').innerText = absentList.length;
 
-        let text = `【訓育組業務紀錄 - ${proj.title}】\n`;
+        let text = `【業務紀錄 - ${proj.title}】\n`;
         text += `📊 進度：已完成 ${presentList.length} 班 / 未完成 ${absentList.length} 班\n`;
         text += `------------------------------\n`;
         text += `未完成/未到班級：\n${absentList.join(', ') || '🎉 全數完成！'}`;
