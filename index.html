@@ -29,11 +29,40 @@
             margin-top: 0;
             margin-bottom: 15px;
         }
+        
+        /* 集合項目輸入框 */
+        .event-box {
+            background: #eef2f7;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .event-box label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #34495e;
+            font-size: 15px;
+        }
+        .event-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .event-input:focus {
+            border-color: #3498db;
+        }
+
         /* 統計欄位 */
         .summary-bar {
             display: flex;
             justify-content: space-around;
-            background: #eef2f7;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
             padding: 12px;
             border-radius: 8px;
             font-size: 16px;
@@ -98,7 +127,7 @@
         }
         textarea {
             width: 100%;
-            height: 90px;
+            height: 110px;
             padding: 8px;
             border-radius: 6px;
             border: 1px solid #ccc;
@@ -128,6 +157,12 @@
 
 <div class="container">
     <h1>幹部集合點名系統</h1>
+
+    <!-- 集合/收件項目輸入欄位 -->
+    <div class="event-box">
+        <label for="eventName">📌 集合原因 / 記事 / 收件項目：</label>
+        <input type="text" id="eventName" class="event-input" placeholder="例如：領取畢業紀念冊資料 / 衛生組長集合" oninput="updateSummary()">
+    </div>
 
     <!-- 頂部統計 -->
     <div class="summary-bar">
@@ -215,6 +250,7 @@
     function updateSummary() {
         const presentList = classes.filter(c => attendance[c]);
         const absentList = classes.filter(c => !attendance[c]);
+        const eventName = document.getElementById('eventName').value.trim();
 
         document.getElementById('presentCount').innerText = presentList.length;
         document.getElementById('absentCount').innerText = absentList.length;
@@ -222,10 +258,14 @@
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         
-        let text = `【幹部集合點名紀錄 - ${timeStr}】\n`;
-        text += `實到：${presentList.length} 班，未到：${absentList.length} 班\n`;
+        let text = `【幹部集合點名紀錄】\n`;
+        if (eventName) {
+            text += `📌 項目：${eventName}\n`;
+        }
+        text += `⏰ 時間：${timeStr}\n`;
+        text += `📊 統計：實到 ${presentList.length} 班 / 未到 ${absentList.length} 班\n`;
         text += `------------------------------\n`;
-        text += `未到班級：\n${absentList.join(', ') || '全數到齊！'}`;
+        text += `未到班級：\n${absentList.join(', ') || '🎉 全數到齊！'}`;
 
         document.getElementById('resultText').value = text;
     }
@@ -240,8 +280,9 @@
 
     // 全部重置
     function resetAll() {
-        if (confirm('確定要清除所有紀錄重設嗎？')) {
+        if (confirm('確定要重設所有班級狀態與項目嗎？')) {
             classes.forEach(c => attendance[c] = false);
+            document.getElementById('eventName').value = '';
             renderClasses();
         }
     }
